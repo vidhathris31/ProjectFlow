@@ -17,6 +17,7 @@ import commentRoutes from './routes/comment.routes';
 import notificationRoutes from './routes/notification.routes';
 import expenseRoutes from './routes/expense.routes';
 import documentRoutes from './routes/document.routes';
+import aiRoutes from './routes/ai.routes';
 import { logger } from './utils/logger';
 
 const app: Application = express();
@@ -112,6 +113,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {

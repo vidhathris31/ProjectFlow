@@ -155,7 +155,156 @@ const buildTheme = (mode: PaletteMode): Theme =>
             borderRight: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
           }
         }
-      }
+      },
+      // ── Additional overrides for consistent spacing, alignment, and
+      // ── overflow handling across tables, forms, modals, and status labels.
+      MuiCardContent: {
+        styleOverrides: {
+          root: {
+            padding: '20px',
+            '&:last-child': { paddingBottom: '20px' },
+          },
+        },
+      },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: { padding: '20px 20px 0' },
+          title: { fontWeight: 700 },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            padding: '12px 16px',
+            borderBottom: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: 320,
+          },
+          head: {
+            fontWeight: 700,
+            fontSize: 12.5,
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+            color: mode === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(15,23,42,0.6)',
+            backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.02)',
+          },
+        },
+      },
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            '&:last-child td': { borderBottom: 'none' },
+            transition: 'background-color 0.15s ease',
+          },
+        },
+      },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            fontSize: 12,
+            fontWeight: 500,
+            borderRadius: 6,
+            padding: '6px 10px',
+            backgroundColor: mode === 'dark' ? 'rgba(248,250,252,0.95)' : 'rgba(15,23,42,0.92)',
+            color: mode === 'dark' ? '#0f172a' : '#ffffff',
+          },
+        },
+      },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            borderRadius: 12,
+            marginTop: 4,
+            boxShadow: mode === 'dark'
+              ? '0 12px 32px -8px rgba(0,0,0,0.6)'
+              : '0 12px 32px -8px rgba(15,23,42,0.18)',
+            border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            margin: '2px 6px',
+            fontSize: 14,
+            minHeight: 40,
+          },
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: {
+            borderRadius: 10,
+            fontSize: 14,
+            alignItems: 'center',
+          },
+        },
+      },
+      MuiAvatar: {
+        styleOverrides: {
+          root: { fontWeight: 600 },
+        },
+      },
+      MuiBadge: {
+        styleOverrides: {
+          badge: { fontWeight: 700, fontSize: 10.5 },
+        },
+      },
+      MuiDialogTitle: {
+        styleOverrides: {
+          root: { fontWeight: 700, fontSize: '1.15rem', padding: '20px 24px' },
+        },
+      },
+      MuiDialogContent: {
+        styleOverrides: {
+          root: { padding: '8px 24px 20px' },
+        },
+      },
+      MuiDialogActions: {
+        styleOverrides: {
+          root: { padding: '16px 24px', gap: 8 },
+        },
+      },
+      MuiLinearProgress: {
+        styleOverrides: {
+          root: { borderRadius: 8, height: 8 },
+        },
+      },
+      MuiDivider: {
+        styleOverrides: {
+          root: {
+            borderColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+          },
+        },
+      },
+      MuiSkeleton: {
+        styleOverrides: {
+          root: {
+            backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+          },
+        },
+      },
+      MuiListItemButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            transition: 'background-color 0.15s ease',
+          },
+        },
+      },
+      MuiTabs: {
+        styleOverrides: {
+          indicator: { borderRadius: 3, height: 3 },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: { textTransform: 'none', fontWeight: 600, minHeight: 44 },
+        },
+      },
     },
   });
 

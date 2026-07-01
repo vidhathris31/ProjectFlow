@@ -48,6 +48,7 @@ import Chat from '@mui/icons-material/Chat';
 import Close from '@mui/icons-material/Close';
 import Check from '@mui/icons-material/Check';
 import DeleteSweep from '@mui/icons-material/DeleteSweep';
+import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useThemeMode } from '../../contexts/ThemeContext';
@@ -73,6 +74,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Collaboration', path: '/collaboration', icon: <Chat /> },
   { label: 'Documents', path: '/documents', icon: <AttachFile /> },
   { label: 'Reports', path: '/reports', icon: <BarChart /> },
+  { label: 'AI Assistant', path: '/ai-assistant', icon: <AutoAwesome /> },
 ];
 
 const ROLE_COLORS: Record<string, string> = {

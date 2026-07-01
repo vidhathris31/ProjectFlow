@@ -4,7 +4,7 @@
   "description": "Project Management System - Backend API",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "node node_modules/nodemon/bin/nodemon.js --watch 'src/**/*.ts' --exec 'node node_modules/ts-node/dist/bin.js' src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
     "build": "node node_modules/typescript/bin/tsc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts"
