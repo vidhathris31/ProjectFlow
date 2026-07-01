@@ -43,40 +43,20 @@ import {
   Legend,
 } from 'recharts';
 import { useAuth } from '../../contexts/AuthContext';
+import { useQuery } from '@tanstack/react-query';
+import { projectService } from '../../services/project.service';
+import { taskService } from '../../services/task.service';
 
-// ─── Mock Data (will be replaced with API calls in later sprints) ───────────
+const STATUS_COLORS: Record<string, string> = {
+  planning: '#9e9e9e',
+  active: '#1976d2',
+  on_hold: '#ed6c02',
+  completed: '#2e7d32',
+  archived: '#7b1fa2',
+  cancelled: '#d32f2f',
+};
 
-const MONTHLY_STATS = [
-  { month: 'Jul', tasks: 45, completed: 38, projects: 5 },
-  { month: 'Aug', tasks: 62, completed: 54, projects: 7 },
-  { month: 'Sep', tasks: 58, completed: 49, projects: 6 },
-  { month: 'Oct', tasks: 71, completed: 65, projects: 8 },
-  { month: 'Nov', tasks: 83, completed: 74, projects: 9 },
-  { month: 'Dec', tasks: 92, completed: 85, projects: 11 },
-];
-
-const TASK_STATUS_DATA = [
-  { name: 'Completed', value: 85, color: '#2e7d32' },
-  { name: 'In Progress', value: 32, color: '#1976d2' },
-  { name: 'Review', value: 18, color: '#9c27b0' },
-  { name: 'Todo', value: 28, color: '#ed6c02' },
-];
-
-const TEAM_WORKLOAD = [
-  { name: 'Alice J.', tasks: 8, capacity: 10 },
-  { name: 'Bob S.', tasks: 6, capacity: 10 },
-  { name: 'Carol M.', tasks: 9, capacity: 10 },
-  { name: 'David L.', tasks: 4, capacity: 10 },
-  { name: 'Eve P.', tasks: 7, capacity: 10 },
-];
-
-const RECENT_ACTIVITY = [
-  { user: 'Alice Johnson', action: 'completed task', item: 'Design system setup', time: '5m ago', avatar: 'A' },
-  { user: 'Bob Smith', action: 'commented on', item: 'API Integration PR', time: '12m ago', avatar: 'B' },
-  { user: 'Carol Martinez', action: 'created project', item: 'E-commerce Platform', time: '1h ago', avatar: 'C' },
-  { user: 'David Lee', action: 'moved task to', item: 'In Progress', time: '2h ago', avatar: 'D' },
-  { user: 'Eve Parker', action: 'uploaded file to', item: 'Project Alpha', time: '3h ago', avatar: 'E' },
-];
+// We'll derive dashboard data from real API data (projects & tasks)
 
 // ─── Stat Card Component ─────────────────────────────────────────────────────
 
@@ -145,6 +125,47 @@ const DashboardPage: React.FC = () => {
     if (hour < 17) return 'Good afternoon';
     return 'Good evening';
   };
+  // Queries: projects and tasks
+  const { data: projects = [], isLoading: isProjectsLoading } = useQuery({
+    queryKey: ['projects', 'dashboard'],
+    queryFn: () => projectService.getAllProjects(),
+  });
+
+  const { data: tasks = [], isLoading: isTasksLoading } = useQuery({
+    queryKey: ['tasks', 'dashboard'],
+    queryFn: () => taskService.getAllTasks(),
+  });
+
+  const loading = isProjectsLoading || isTasksLoading;
+
+  // Derived metrics
+  const totalProjects = projects.length;
+  const activeProjects = projects.filter((p) => p.status === 'active').length;
+  const completedProjects = projects.filter((p) => p.status === 'completed').length;
+
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.status === 'completed').length;
+  const pendingTasks = totalTasks - completedTasks;
+  const now = new Date();
+  const overdueTasks = tasks.filter((t) => t.dueDate && new Date(t.dueDate) < now && t.status !== 'completed').length;
+
+  // team members count (unique ids across project managers and members)
+  const memberIds = new Set<string>();
+  projects.forEach((p) => {
+    if (p.projectManager) memberIds.add(typeof p.projectManager === 'string' ? p.projectManager : (p.projectManager as any)._id);
+    (p.members || []).forEach((m) => {
+      const id = typeof m.user === 'string' ? m.user : (m.user as any)?._id;
+      if (id) memberIds.add(id);
+    });
+  });
+  const teamMembers = memberIds.size;
+
+  // budget usage across projects
+  const totalBudget = projects.reduce((s, p) => s + (p.budget || 0), 0);
+  const totalSpent = projects.reduce((s, p) => s + (p.spent || 0), 0);
+  const budgetUsage = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+
+  const totalTrackedHours = tasks.reduce((s, t) => s + (t.actualHours || 0), 0);
 
   return (
     <Box>
@@ -163,8 +184,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Total Projects"
-            value={24}
-            subtitle="3 completed this month"
+            value={loading ? '—' : totalProjects}
+            subtitle={`${loading ? '' : `${completedProjects} completed`}`} 
             icon={<FolderOpen />}
             color="#1976d2"
             trend={{ value: 12, isPositive: true }}
@@ -173,8 +194,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Active Tasks"
-            value={163}
-            subtitle="32 due this week"
+            value={loading ? '—' : totalTasks}
+            subtitle={loading ? '' : `${overdueTasks} overdue`}
             icon={<Assignment />}
             color="#9c27b0"
             trend={{ value: 8, isPositive: true }}
@@ -183,8 +204,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Completed Tasks"
-            value={85}
-            subtitle="↑ 18% from last month"
+            value={loading ? '—' : completedTasks}
+            subtitle={loading ? '' : `of ${totalTasks} total`}
             icon={<CheckCircle />}
             color="#2e7d32"
             trend={{ value: 18, isPositive: true }}
@@ -193,7 +214,7 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Overdue Tasks"
-            value={12}
+            value={loading ? '—' : overdueTasks}
             subtitle="Requires immediate attention"
             icon={<Warning />}
             color="#d32f2f"
@@ -203,8 +224,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Team Members"
-            value={18}
-            subtitle="5 roles, 3 departments"
+            value={loading ? '—' : teamMembers}
+            subtitle="Across all projects"
             icon={<People />}
             color="#0288d1"
           />
@@ -212,8 +233,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Hours Tracked"
-            value="1,248h"
-            subtitle="This month"
+            value={loading ? '—' : `${totalTrackedHours}h`}
+            subtitle="Sum of actual hours"
             icon={<Timer />}
             color="#ed6c02"
             trend={{ value: 6, isPositive: true }}
@@ -222,8 +243,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Budget Used"
-            value="68%"
-            subtitle="$68,000 of $100,000"
+            value={loading ? '—' : `${budgetUsage}%`}
+            subtitle={loading ? '' : `$${totalSpent.toLocaleString()} of $${totalBudget.toLocaleString()}`}
             icon={<AttachMoney />}
             color="#7b1fa2"
           />
@@ -231,8 +252,8 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} sm={6} lg={3}>
           <StatCard
             title="Productivity"
-            value="87%"
-            subtitle="Above target (80%)"
+            value={loading ? '—' : '—'}
+            subtitle="Calculated from team KPIs"
             icon={<TrendingUp />}
             color="#2e7d32"
             trend={{ value: 4, isPositive: true }}
@@ -257,8 +278,8 @@ const DashboardPage: React.FC = () => {
                 </Box>
                 <Tooltip title="More options"><IconButton size="small"><MoreVert /></IconButton></Tooltip>
               </Box>
-              <ResponsiveContainer width="100%" height={240}>
-                <AreaChart data={MONTHLY_STATS} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <ResponsiveContainer width="100%" height={240}>
+                <AreaChart data={/* use tasks per month derived from API */ []} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <defs>
                     <linearGradient id="tasksGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#1976d2" stopOpacity={0.3} />
@@ -292,38 +313,27 @@ const DashboardPage: React.FC = () => {
               <Typography variant="caption" color="text.secondary">
                 Current sprint
               </Typography>
-              <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie
-                    data={TASK_STATUS_DATA}
+                    data={[]}
                     cx="50%"
                     cy="50%"
                     innerRadius={55}
                     outerRadius={90}
                     paddingAngle={3}
                     dataKey="value"
-                  >
-                    {TASK_STATUS_DATA.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
+                  />
                   <RechartsTooltip />
                 </PieChart>
               </ResponsiveContainer>
               <Box display="flex" flexWrap="wrap" gap={1} justifyContent="center">
-                {TASK_STATUS_DATA.map((item) => (
-                  <Chip
-                    key={item.name}
-                    label={`${item.name}: ${item.value}`}
-                    size="small"
-                    sx={{
-                      bgcolor: item.color,
-                      color: 'white',
-                      fontWeight: 600,
-                      fontSize: 11,
-                    }}
-                  />
-                ))}
+                {/* status chips will be populated when data available */}
+                {!loading ? (
+                  ['Completed', 'In Progress', 'Review', 'Todo'].map((n) => (
+                    <Chip key={n} label={n} size="small" sx={{ fontWeight: 600, fontSize: 11 }} />
+                  ))
+                ) : null}
               </Box>
             </CardContent>
           </Card>
@@ -340,7 +350,7 @@ const DashboardPage: React.FC = () => {
                 Current task distribution
               </Typography>
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={TEAM_WORKLOAD} layout="vertical" margin={{ left: 20 }}>
+                <BarChart data={[] /* derived from tasks/assignees when needed */} layout="vertical" margin={{ left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                   <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 12 }} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={60} />
@@ -364,32 +374,36 @@ const DashboardPage: React.FC = () => {
                 Latest team updates
               </Typography>
               <List dense disablePadding>
-                {RECENT_ACTIVITY.map((activity, index) => (
-                  <React.Fragment key={index}>
-                    <ListItem disableGutters alignItems="flex-start" sx={{ py: 1 }}>
-                      <ListItemAvatar sx={{ minWidth: 40 }}>
-                        <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14 }}>
-                          {activity.avatar}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Typography variant="body2" component="span">
-                            <strong>{activity.user}</strong>{' '}
-                            <span style={{ color: '#666' }}>{activity.action}</span>{' '}
-                            <strong>{activity.item}</strong>
-                          </Typography>
-                        }
-                        secondary={
-                          <Typography variant="caption" color="text.secondary">
-                            {activity.time}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    {index < RECENT_ACTIVITY.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
+                {!loading && tasks.slice(0, 8).map((t, index) => {
+                  const reporter = typeof t.reporter === 'string' ? undefined : (t.reporter as any);
+                  const userName = reporter ? `${reporter.firstName} ${reporter.lastName}` : 'Unknown';
+                  return (
+                    <React.Fragment key={t._id}>
+                      <ListItem disableGutters alignItems="flex-start" sx={{ py: 1 }}>
+                        <ListItemAvatar sx={{ minWidth: 40 }}>
+                          <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: 14 }}>
+                            {userName.split(' ').map(n => n[0]).slice(0,2).join('')}
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2" component="span">
+                              <strong>{userName}</strong>{' '}
+                              <span style={{ color: '#666' }}>{t.status === 'completed' ? 'completed' : 'updated'}</span>{' '}
+                              <strong>{t.title}</strong>
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography variant="caption" color="text.secondary">
+                              {t.updatedAt ? new Date(t.updatedAt).toLocaleString() : t.createdAt}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      {index < Math.min(7, tasks.length - 1) && <Divider />}
+                    </React.Fragment>
+                  );
+                })}
               </List>
             </CardContent>
           </Card>
@@ -403,38 +417,39 @@ const DashboardPage: React.FC = () => {
             Project Progress Overview
           </Typography>
           <Grid container spacing={2} mt={0.5}>
-            {[
-              { name: 'E-Commerce Platform', progress: 72, status: 'active', color: '#1976d2' },
-              { name: 'Mobile App Redesign', progress: 45, status: 'active', color: '#9c27b0' },
-              { name: 'Data Analytics Dashboard', progress: 91, status: 'active', color: '#2e7d32' },
-              { name: 'CRM Integration', progress: 28, status: 'active', color: '#ed6c02' },
-            ].map((project) => (
-              <Grid item xs={12} sm={6} key={project.name}>
-                <Box mb={1}>
-                  <Box display="flex" justifyContent="space-between" mb={0.5}>
-                    <Typography variant="body2" fontWeight={600}>
-                      {project.name}
-                    </Typography>
-                    <Typography variant="body2" fontWeight={700} color={project.color}>
-                      {project.progress}%
-                    </Typography>
-                  </Box>
-                  <LinearProgress
-                    variant="determinate"
-                    value={project.progress}
-                    sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: `${project.color}20`,
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: project.color,
-                        borderRadius: 4,
-                      },
-                    }}
-                  />
-                </Box>
+            {projects.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="body2" color="text.secondary">No projects available for your account.</Typography>
               </Grid>
-            ))}
+            ) : (
+              projects.map((project) => (
+                <Grid item xs={12} sm={6} key={project.name}>
+                  <Box mb={1}>
+                    <Box display="flex" justifyContent="space-between" mb={0.5}>
+                      <Typography variant="body2" fontWeight={600}>
+                        {project.name}
+                      </Typography>
+                      <Typography variant="body2" fontWeight={700} color={STATUS_COLORS[project.status] || '#1976d2'}>
+                        {project.progress}%
+                      </Typography>
+                    </Box>
+                    <LinearProgress
+                      variant="determinate"
+                      value={project.progress}
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: `${(STATUS_COLORS[project.status] || '#1976d2')}20`,
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: STATUS_COLORS[project.status] || '#1976d2',
+                          borderRadius: 4,
+                        },
+                      }}
+                    />
+                  </Box>
+                </Grid>
+              ))
+            )}
           </Grid>
         </CardContent>
       </Card>

@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../../contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Zod schema for login form validation
 const loginSchema = z.object({
@@ -41,6 +42,7 @@ const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const from = (location.state as any)?.from?.pathname || '/dashboard';
 
@@ -56,6 +58,7 @@ const LoginPage: React.FC = () => {
     try {
       setError(null);
       await login(data);
+      queryClient.clear();
       navigate(from, { replace: true });
     } catch (err: any) {
       const message =

@@ -28,6 +28,10 @@ import Search from '@mui/icons-material/Search';
 import { projectService } from '../../services/project.service';
 import { taskService } from '../../services/task.service';
 import { userService } from '../../services/user.service';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import type { Task, TaskPriority, TaskStatus } from '../../types';
 
 const COLUMNS: Array<{ key: TaskStatus; label: string; color: string }> = [
@@ -382,14 +386,14 @@ const TasksPage: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-            <TextField
-              label="Due Date"
-              type="date"
-              value={dueDate}
-              onChange={(event) => setDueDate(event.target.value)}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Due Date"
+                value={dueDate ? dayjs(dueDate) : null}
+                onChange={(newValue) => setDueDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                renderInput={(params) => <TextField fullWidth {...params} />}
+              />
+            </LocalizationProvider>
           </DialogContent>
           <DialogActions sx={{ p: 3 }}>
             <Button onClick={() => setIsCreateOpen(false)}>Cancel</Button>

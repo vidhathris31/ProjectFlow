@@ -36,6 +36,10 @@ import CheckCircle from '@mui/icons-material/CheckCircle';
 import TrendingDown from '@mui/icons-material/TrendingDown';
 import { projectService } from '../../services/project.service';
 import { expenseService } from '../../services/expense.service';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const CATEGORY_COLORS: Record<string, string> = {
   software: '#1976d2',
@@ -357,14 +361,14 @@ const BudgetPage: React.FC = () => {
                 onChange={(e) => setExpenseDesc(e.target.value)}
               />
 
-              <TextField
-                fullWidth
-                type="date"
-                label="Transaction Date"
-                InputLabelProps={{ shrink: true }}
-                value={expenseDate}
-                onChange={(e) => setExpenseDate(e.target.value)}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Transaction Date"
+                  value={expenseDate ? dayjs(expenseDate) : null}
+                  onChange={(newValue) => setExpenseDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                  renderInput={(params) => <TextField fullWidth required {...params} />}
+                />
+              </LocalizationProvider>
             </Box>
           </DialogContent>
           <DialogActions sx={{ p: 3 }}>

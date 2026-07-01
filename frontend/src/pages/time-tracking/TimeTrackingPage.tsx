@@ -32,6 +32,10 @@ import DateRange from '@mui/icons-material/DateRange';
 import { timeService } from '../../services/time.service';
 import { taskService } from '../../services/task.service';
 import { useAuth } from '../../contexts/AuthContext';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const TableRowCell = (props: React.ComponentProps<typeof TableCell>) => (
   <TableCell sx={{ fontWeight: 600 }} {...props} />
@@ -303,15 +307,14 @@ const TimeTrackingPage: React.FC = () => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      type="date"
-                      size="small"
-                      label="Log Date"
-                      InputLabelProps={{ shrink: true }}
-                      value={manualDate}
-                      onChange={(e) => setManualDate(e.target.value)}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Log Date"
+                        value={manualDate ? dayjs(manualDate) : null}
+                        onChange={(newValue) => setManualDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                        renderInput={(params) => <TextField fullWidth required size="small" {...params} />}
+                      />
+                    </LocalizationProvider>
                   </Grid>
                 </Grid>
 
