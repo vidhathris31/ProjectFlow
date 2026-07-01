@@ -26,6 +26,10 @@ import {
   CircularProgress,
   Tooltip,
 } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import FilterList from '@mui/icons-material/FilterList';
@@ -69,7 +73,7 @@ const ProjectsPage: React.FC = () => {
   const [formKey, setFormKey] = useState('');
   const [formDesc, setFormDesc] = useState('');
   const [formPriority, setFormPriority] = useState<ProjectPriority>('medium');
-  const [formBudget, setFormBudget] = useState(0);
+  const [formBudget, setFormBudget] = useState('');
   const [formStartDate, setFormStartDate] = useState('');
   const [formEndDate, setFormEndDate] = useState('');
   const [formDueDate, setFormDueDate] = useState('');
@@ -105,7 +109,7 @@ const ProjectsPage: React.FC = () => {
     setFormKey('');
     setFormDesc('');
     setFormPriority('medium');
-    setFormBudget(0);
+    setFormBudget('');
     setFormStartDate('');
     setFormEndDate('');
     setFormDueDate('');
@@ -128,9 +132,17 @@ const ProjectsPage: React.FC = () => {
   };
 
   return (
-    <Box>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Box>
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3.5}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        flexWrap="wrap"
+        rowGap={2}
+        mb={4}
+      >
         <Box>
           <Typography variant="h5" fontWeight={700} gutterBottom>
             Projects
@@ -143,16 +155,30 @@ const ProjectsPage: React.FC = () => {
           variant="contained"
           startIcon={<Add />}
           onClick={handleOpenCreate}
-          sx={{ borderRadius: 2, textTransform: 'none', px: 2.5, py: 1 }}
+          sx={{
+            borderRadius: 2,
+            textTransform: 'none',
+            px: 3,
+            py: 1.2,
+            minWidth: 170,
+            height: 48,
+          }}
         >
           New Project
         </Button>
       </Box>
 
       {/* Filter Toolbar */}
-      <Box display="flex" gap={2} mb={4} flexWrap="wrap">
+      <Box
+        display="flex"
+        gap={2}
+        mt={1}
+        mb={5}
+        flexWrap="wrap"
+        alignItems="center"
+      >
         <TextField
-          size="small"
+          size="medium"
           placeholder="Search by name or key..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -166,7 +192,12 @@ const ProjectsPage: React.FC = () => {
           }}
         />
 
-        <FormControl size="small" sx={{ minWidth: 160 }}>
+        <FormControl
+          size="medium"
+          sx={{
+            minWidth: 180,
+          }}
+        >
           <InputLabel id="status-filter-label" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <FilterList fontSize="small" /> Status
           </InputLabel>
@@ -208,7 +239,7 @@ const ProjectsPage: React.FC = () => {
           </Button>
         </Card>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={4} sx={{ mt: 1 }}>
           {projects.map((project) => (
             <Grid item xs={12} sm={6} lg={4} key={project._id}>
               <Card
@@ -334,6 +365,7 @@ const ProjectsPage: React.FC = () => {
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -379,37 +411,43 @@ const ProjectsPage: React.FC = () => {
                   type="number"
                   label="Budget ($)"
                   value={formBudget}
-                  onChange={(e) => setFormBudget(Number(e.target.value))}
+                  onChange={(e) => setFormBudget(e.target.value)}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  type="date"
+                <DatePicker
                   label="Start Date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formStartDate}
-                  onChange={(e) => setFormStartDate(e.target.value)}
+                  value={formStartDate ? dayjs(formStartDate) : null}
+                  onChange={(newValue) =>
+                    setFormStartDate(newValue ? newValue.format("YYYY-MM-DD") : "")
+                  }
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  type="date"
+                <DatePicker
                   label="End Date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formEndDate}
-                  onChange={(e) => setFormEndDate(e.target.value)}
+                  value={formEndDate ? dayjs(formEndDate) : null}
+                  onChange={(newValue) =>
+                    setFormEndDate(newValue ? newValue.format("YYYY-MM-DD") : "")
+                  }
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
-                <TextField
-                  fullWidth
-                  type="date"
+                <DatePicker
                   label="Due Date"
-                  InputLabelProps={{ shrink: true }}
-                  value={formDueDate}
-                  onChange={(e) => setFormDueDate(e.target.value)}
+                  value={formDueDate ? dayjs(formDueDate) : null}
+                  onChange={(newValue) =>
+                    setFormDueDate(newValue ? newValue.format("YYYY-MM-DD") : "")
+                  }
+                  slotProps={{
+                    textField: { fullWidth: true },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -447,6 +485,7 @@ const ProjectsPage: React.FC = () => {
         </form>
       </Dialog>
     </Box>
+    </LocalizationProvider>
   );
 };
 
