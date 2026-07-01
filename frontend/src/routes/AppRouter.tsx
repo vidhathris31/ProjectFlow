@@ -27,6 +27,7 @@ const DocumentsPage = lazy(() => import('../pages/documents/DocumentsPage'));
 const TimelinePage = lazy(() => import('../pages/timeline/TimelinePage'));
 const BudgetPage = lazy(() => import('../pages/budget/BudgetPage'));
 const ReportsPage = lazy(() => import('../pages/reports/ReportsPage'));
+const AIAssistantPage = lazy(() => import('../pages/ai/AIAssistantPage'));
 
 const PageLoader = () => (
   <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
@@ -66,6 +67,7 @@ const AppRouter: React.FC = () => (
             <Route path="/timeline" element={<TimelinePage />} />
             <Route path="/budget" element={<BudgetPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/ai-assistant" element={<AIAssistantPage />} />
 
             {/* Admin-only routes */}
             <Route element={<ProtectedRoute requiredRoles={['admin']} />}>
