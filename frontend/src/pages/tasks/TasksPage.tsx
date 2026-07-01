@@ -391,7 +391,7 @@ const TasksPage: React.FC = () => {
                 label="Due Date"
                 value={dueDate ? dayjs(dueDate) : null}
                 onChange={(newValue) => setDueDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
-                renderInput={(params) => <TextField fullWidth {...params} />}
+                slotProps={{ textField: { fullWidth: true } }}
               />
             </LocalizationProvider>
           </DialogContent>

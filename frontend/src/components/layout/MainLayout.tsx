@@ -210,21 +210,34 @@ const MainLayout: React.FC = () => {
                   justifyContent: sidebarCollapsed && !isMobile ? 'center' : 'flex-start',
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&.Mui-selected': {
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                    boxShadow: mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(79, 70, 229, 0.25)',
-                    '& .MuiListItemIcon-root': { color: 'white' },
-                    '&:hover': { backgroundColor: 'primary.dark' },
+                    backgroundColor: mode === 'dark' ? 'rgba(79, 70, 229, 0.15)' : 'rgba(79, 70, 229, 0.1)',
+                    color: mode === 'dark' ? '#818cf8' : '#4f46e5',
+                    boxShadow: 'none',
+                    '& .MuiListItemIcon-root': { color: mode === 'dark' ? '#818cf8' : '#4f46e5' },
+                    '&:hover': { backgroundColor: mode === 'dark' ? 'rgba(79, 70, 229, 0.25)' : 'rgba(79, 70, 229, 0.15)' },
+                    position: 'relative',
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 0,
+                      top: '10%',
+                      height: '80%',
+                      width: '4px',
+                      backgroundColor: mode === 'dark' ? '#818cf8' : '#4f46e5',
+                      borderRadius: '0 4px 4px 0',
+                    }
                   },
                   '&:hover:not(.Mui-selected)': {
                     backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                    color: 'text.primary',
                   }
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: sidebarCollapsed && !isMobile ? 0 : 40,
-                    color: isActive(item.path) ? 'white' : 'text.secondary',
+                    color: isActive(item.path) ? (mode === 'dark' ? '#818cf8' : '#4f46e5') : 'text.secondary',
+                    transition: 'color 0.2s',
                   }}
                 >
                   {item.badge ? (
@@ -433,8 +446,10 @@ const MainLayout: React.FC = () => {
         </AppBar>
 
         {/* Page Content */}
-        <Box sx={{ flex: 1, p: { xs: 3, md: 4, lg: 5 }, backgroundColor: 'background.default' }}>
-          <Outlet />
+        <Box sx={{ flex: 1, p: { xs: 2, sm: 3, md: 4, lg: 5 }, backgroundColor: 'background.default' }}>
+          <Box sx={{ maxWidth: 1440, mx: 'auto', height: '100%' }}>
+            <Outlet />
+          </Box>
         </Box>
       </Box>
 

@@ -366,7 +366,7 @@ const BudgetPage: React.FC = () => {
                   label="Transaction Date"
                   value={expenseDate ? dayjs(expenseDate) : null}
                   onChange={(newValue) => setExpenseDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
-                  renderInput={(params) => <TextField fullWidth required {...params} />}
+                  slotProps={{ textField: { fullWidth: true, required: true } }}
                 />
               </LocalizationProvider>
             </Box>

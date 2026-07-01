@@ -249,12 +249,12 @@ const ProjectDetailsPage: React.FC = () => {
       </Button>
 
       {/* Hero Banner Details */}
-      <Card sx={{ borderRadius: 3, mb: 4 }}>
-        <CardContent sx={{ p: 4 }}>
-          <Grid container spacing={3}>
+      <Card sx={{ borderRadius: 4, mb: 4, boxShadow: 2 }}>
+        <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+          <Grid container spacing={4} alignItems="stretch">
             <Grid item xs={12} md={8}>
-              <Box display="flex" alignItems="center" gap={1.5} mb={1}>
-                <Chip label={project.key} color="primary" size="small" sx={{ fontWeight: 700, borderRadius: 1.5 }} />
+              <Box display="flex" alignItems="center" gap={1.5} mb={2}>
+                <Chip label={project.key} color="primary" size="small" sx={{ fontWeight: 800, borderRadius: 1.5 }} />
                 <Chip
                   label={project.status.replace('_', ' ')}
                   size="small"
@@ -264,22 +264,22 @@ const ProjectDetailsPage: React.FC = () => {
                     borderColor: STATUS_COLORS[project.status],
                     borderWidth: 1,
                     borderStyle: 'solid',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     textTransform: 'capitalize',
                     borderRadius: 1.5,
                   }}
                 />
               </Box>
-              <Typography variant="h4" fontWeight={700} gutterBottom>
+              <Typography variant="h4" fontWeight={800} gutterBottom>
                 {project.name}
               </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 650 }}>
                 {project.description || 'No description provided.'}
               </Typography>
 
-              <Box display="flex" flexWrap="wrap" gap={3} mt={2}>
+              <Box display="flex" flexWrap="wrap" gap={4} mt={2}>
                 <Box>
-                  <Typography variant="caption" color="text.secondary" display="block">
+                  <Typography variant="caption" color="text.secondary" display="block" textTransform="uppercase" letterSpacing="0.05em">
                     Project Manager
                   </Typography>
                   <Box display="flex" alignItems="center" gap={1} mt={0.5}>
@@ -292,7 +292,7 @@ const ProjectDetailsPage: React.FC = () => {
                   </Box>
                 </Box>
                 <Box>
-                  <Typography variant="caption" color="text.secondary" display="block">
+                  <Typography variant="caption" color="text.secondary" display="block" textTransform="uppercase" letterSpacing="0.05em">
                     Date Range
                   </Typography>
                   <Box display="flex" alignItems="center" gap={0.5} mt={0.5} color="text.primary">
@@ -310,33 +310,35 @@ const ProjectDetailsPage: React.FC = () => {
             <Grid item xs={12} md={4}>
               <Box
                 sx={{
-                  bgcolor: 'action.hover',
-                  p: 3,
-                  borderRadius: 3,
+                  bgcolor: 'background.default',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  p: 4,
+                  borderRadius: 4,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                 }}
               >
-                <Box mb={2}>
-                  <Box display="flex" justifyContent="space-between" mb={0.5}>
-                    <Typography variant="caption" fontWeight={600} color="text.secondary">
+                <Box mb={4}>
+                  <Box display="flex" justifyContent="space-between" mb={1}>
+                    <Typography variant="caption" fontWeight={600} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                       Tasks Progress
                     </Typography>
-                    <Typography variant="caption" fontWeight={700} color="primary">
+                    <Typography variant="caption" fontWeight={800} color="primary">
                       {project.progress}%
                     </Typography>
                   </Box>
-                  <LinearProgress variant="determinate" value={project.progress} sx={{ height: 6, borderRadius: 3 }} />
+                  <LinearProgress variant="determinate" value={project.progress} sx={{ height: 8, borderRadius: 4 }} />
                 </Box>
 
                 <Box>
-                  <Box display="flex" justifyContent="space-between" mb={0.5}>
-                    <Typography variant="caption" fontWeight={600} color="text.secondary">
+                  <Box display="flex" justifyContent="space-between" mb={1}>
+                    <Typography variant="caption" fontWeight={600} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                       Budget Used (${project.spent} / ${project.budget || 0})
                     </Typography>
-                    <Typography variant="caption" fontWeight={700} color={budgetProgress > 90 ? 'error' : 'primary'}>
+                    <Typography variant="caption" fontWeight={800} color={budgetProgress > 90 ? 'error' : 'primary'}>
                       {budgetProgress}%
                     </Typography>
                   </Box>
@@ -344,7 +346,7 @@ const ProjectDetailsPage: React.FC = () => {
                     variant="determinate"
                     value={Math.min(100, budgetProgress)}
                     color={budgetProgress > 90 ? 'error' : 'success'}
-                    sx={{ height: 6, borderRadius: 3 }}
+                    sx={{ height: 8, borderRadius: 4 }}
                   />
                 </Box>
               </Box>
@@ -627,9 +629,9 @@ const ProjectDetailsPage: React.FC = () => {
       </TabPanel>
 
       {/* Add Member Dialog */}
-      <Dialog open={isAddMemberOpen} onClose={() => setIsAddMemberOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 3 } }}>
+      <Dialog open={isAddMemberOpen} onClose={() => setIsAddMemberOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 4 } }}>
         <form onSubmit={handleAddMember}>
-          <DialogTitle sx={{ fontWeight: 700 }}>Add Member to Project</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800, fontSize: '1.25rem', pb: 1 }}>Add Member to Project</DialogTitle>
           <DialogContent>
             <Box display="flex" flexDirection="column" gap={2} mt={1}>
               <FormControl fullWidth required>
@@ -666,8 +668,8 @@ const ProjectDetailsPage: React.FC = () => {
               </FormControl>
             </Box>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setIsAddMemberOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+          <DialogActions sx={{ p: 3, pt: 2 }}>
+            <Button onClick={() => setIsAddMemberOpen(false)} sx={{ borderRadius: 2, textTransform: 'none' }}>Cancel</Button>
             <Button type="submit" variant="contained" sx={{ borderRadius: 2 }} disabled={addMemberMutation.isPending}>
               {addMemberMutation.isPending ? 'Adding...' : 'Add Member'}
             </Button>
@@ -676,9 +678,9 @@ const ProjectDetailsPage: React.FC = () => {
       </Dialog>
 
       {/* Add Expense Dialog */}
-      <Dialog open={isAddExpenseOpen} onClose={() => setIsAddExpenseOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 3 } }}>
+      <Dialog open={isAddExpenseOpen} onClose={() => setIsAddExpenseOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 4 } }}>
         <form onSubmit={handleAddExpense}>
-          <DialogTitle sx={{ fontWeight: 700 }}>Log Project Expense</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800, fontSize: '1.25rem', pb: 1 }}>Log Project Expense</DialogTitle>
           <DialogContent>
             <Box display="flex" flexDirection="column" gap={2.5} mt={1}>
               <TextField
@@ -716,13 +718,13 @@ const ProjectDetailsPage: React.FC = () => {
                   label="Date"
                   value={expenseDate ? dayjs(expenseDate) : null}
                   onChange={(newValue) => setExpenseDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
-                  renderInput={(params) => <TextField fullWidth required {...params} />}
+                  slotProps={{ textField: { fullWidth: true, required: true } }}
                 />
               </LocalizationProvider>
             </Box>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setIsAddExpenseOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+          <DialogActions sx={{ p: 3, pt: 2 }}>
+            <Button onClick={() => setIsAddExpenseOpen(false)} sx={{ borderRadius: 2, textTransform: 'none' }}>Cancel</Button>
             <Button type="submit" variant="contained" sx={{ borderRadius: 2 }} disabled={addExpenseMutation.isPending}>
               {addExpenseMutation.isPending ? 'Logging...' : 'Log Expense'}
             </Button>
@@ -731,9 +733,9 @@ const ProjectDetailsPage: React.FC = () => {
       </Dialog>
 
       {/* Add Milestone Dialog */}
-      <Dialog open={isAddMilestoneOpen} onClose={() => setIsAddMilestoneOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 3 } }}>
+      <Dialog open={isAddMilestoneOpen} onClose={() => setIsAddMilestoneOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: 4 } }}>
         <form onSubmit={handleAddMilestone}>
-          <DialogTitle sx={{ fontWeight: 700 }}>Add Project Milestone</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800, fontSize: '1.25rem', pb: 1 }}>Add Project Milestone</DialogTitle>
           <DialogContent>
             <Box display="flex" flexDirection="column" gap={2.5} mt={1}>
               <TextField
@@ -748,7 +750,7 @@ const ProjectDetailsPage: React.FC = () => {
                   label="Due Date"
                   value={milestoneDate ? dayjs(milestoneDate) : null}
                   onChange={(newValue) => setMilestoneDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
-                  renderInput={(params) => <TextField fullWidth required {...params} />}
+                  slotProps={{ textField: { fullWidth: true, required: true } }}
                 />
               </LocalizationProvider>
               <TextField
@@ -759,8 +761,8 @@ const ProjectDetailsPage: React.FC = () => {
               />
             </Box>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setIsAddMilestoneOpen(false)} sx={{ borderRadius: 2 }}>Cancel</Button>
+          <DialogActions sx={{ p: 3, pt: 2 }}>
+            <Button onClick={() => setIsAddMilestoneOpen(false)} sx={{ borderRadius: 2, textTransform: 'none' }}>Cancel</Button>
             <Button type="submit" variant="contained" sx={{ borderRadius: 2 }} disabled={updateProjectMutation.isPending}>
               {updateProjectMutation.isPending ? 'Adding...' : 'Add Milestone'}
             </Button>

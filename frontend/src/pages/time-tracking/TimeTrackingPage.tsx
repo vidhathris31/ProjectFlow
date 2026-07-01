@@ -312,7 +312,7 @@ const TimeTrackingPage: React.FC = () => {
                         label="Log Date"
                         value={manualDate ? dayjs(manualDate) : null}
                         onChange={(newValue) => setManualDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
-                        renderInput={(params) => <TextField fullWidth required size="small" {...params} />}
+                        slotProps={{ textField: { fullWidth: true, required: true, size: 'small' } }}
                       />
                     </LocalizationProvider>
                   </Grid>

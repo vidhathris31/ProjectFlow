@@ -25,6 +25,7 @@ import {
   InputAdornment,
   CircularProgress,
   Tooltip,
+  Paper,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -138,16 +139,16 @@ const ProjectsPage: React.FC = () => {
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-start"
         flexWrap="wrap"
-        rowGap={2}
+        gap={2}
         mb={4}
       >
         <Box>
-          <Typography variant="h5" fontWeight={700} gutterBottom>
+          <Typography variant="h4" fontWeight={800} gutterBottom>
             Projects
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body1" color="text.secondary">
             Manage your workspace projects, milestones, and budgets.
           </Typography>
         </Box>
@@ -158,10 +159,11 @@ const ProjectsPage: React.FC = () => {
           sx={{
             borderRadius: 2,
             textTransform: 'none',
-            px: 3,
-            py: 1.2,
-            minWidth: 170,
+            px: 4,
+            py: 1.5,
+            minWidth: 160,
             height: 48,
+            boxShadow: 2,
           }}
         >
           New Project
@@ -169,13 +171,20 @@ const ProjectsPage: React.FC = () => {
       </Box>
 
       {/* Filter Toolbar */}
-      <Box
-        display="flex"
-        gap={2}
-        mt={1}
-        mb={5}
-        flexWrap="wrap"
-        alignItems="center"
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          mb: 4,
+          borderRadius: 3,
+          border: '1px solid',
+          borderColor: 'divider',
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          bgcolor: 'background.paper',
+        }}
       >
         <TextField
           size="medium"
@@ -216,7 +225,7 @@ const ProjectsPage: React.FC = () => {
             <MenuItem value="cancelled">Cancelled</MenuItem>
           </Select>
         </FormControl>
-      </Box>
+      </Paper>
 
       {/* Project Grid */}
       {isProjectsLoading ? (
@@ -239,19 +248,17 @@ const ProjectsPage: React.FC = () => {
           </Button>
         </Card>
       ) : (
-        <Grid container spacing={4} sx={{ mt: 1 }}>
+        <Grid container spacing={4} sx={{ mt: 1 }} alignItems="stretch">
           {projects.map((project) => (
             <Grid item xs={12} sm={6} lg={4} key={project._id}>
               <Card
+                className="hover-lift"
                 sx={{
                   height: '100%',
-                  borderRadius: 3,
+                  borderRadius: 4,
                   cursor: 'pointer',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 4,
-                  },
+                  display: 'flex',
+                  flexDirection: 'column',
                 }}
                 onClick={() => navigate(`/projects/${project._id}`)}
               >
@@ -289,47 +296,43 @@ const ProjectsPage: React.FC = () => {
                   </Box>
 
                   {/* Title & Description */}
-                  <Typography variant="h6" fontWeight={700} gutterBottom noWrap>
+                  <Typography variant="h5" fontWeight={800} gutterBottom noWrap>
                     {project.name}
                   </Typography>
                   <Typography
                     variant="body2"
                     color="text.secondary"
+                    className="truncate-2"
                     sx={{
-                      mb: 2.5,
-                      height: 40,
-                      display: '-webkit-box',
-                      wordBreak: 'break-word',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
+                      mb: 3,
+                      minHeight: 44,
                     }}
                   >
                     {project.description || 'No description provided.'}
                   </Typography>
 
                   {/* Progress bar */}
-                  <Box mb={3}>
-                    <Box display="flex" justifyContent="space-between" mb={0.5}>
-                      <Typography variant="caption" fontWeight={600} color="text.secondary">
+                  <Box mb={4} flex={1}>
+                    <Box display="flex" justifyContent="space-between" mb={1}>
+                      <Typography variant="caption" fontWeight={600} color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                         Progress
                       </Typography>
-                      <Typography variant="caption" fontWeight={700} color="primary">
+                      <Typography variant="caption" fontWeight={800} color="primary">
                         {project.progress}%
                       </Typography>
                     </Box>
                     <LinearProgress
                       variant="determinate"
                       value={project.progress}
-                      sx={{ height: 6, borderRadius: 3 }}
+                      sx={{ height: 8, borderRadius: 4 }}
                     />
                   </Box>
 
                   <Box display="flex" alignItems="center" justifyContent="space-between" mt="auto">
                     {/* Dates */}
-                    <Box display="flex" alignItems="center" gap={0.5} color="text.secondary">
-                      <CalendarToday sx={{ fontSize: 14 }} />
-                      <Typography variant="caption">
+                    <Box display="flex" alignItems="center" gap={1} color="text.secondary">
+                      <CalendarToday sx={{ fontSize: 16 }} />
+                      <Typography variant="caption" fontWeight={600}>
                         {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'No due date'}
                       </Typography>
                     </Box>
@@ -353,11 +356,12 @@ const ProjectsPage: React.FC = () => {
       )}
 
       {/* Create Project Dialog */}
-      <Dialog open={isCreateOpen} onClose={handleCloseCreate} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+      <Dialog open={isCreateOpen} onClose={handleCloseCreate} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4, overflow: 'visible' } }}>
         <form onSubmit={handleCreateSubmit}>
-          <DialogTitle sx={{ fontWeight: 700 }}>Create New Project</DialogTitle>
-          <DialogContent sx={{ pt: 1 }}>
-            <Grid container spacing={2.5}>
+          <DialogTitle sx={{ fontWeight: 800, fontSize: '1.25rem', pb: 1 }}>Create New Project</DialogTitle>
+          <DialogContent>
+            <Box sx={{ mt: 1 }}>
+              <Grid container spacing={3}>
               <Grid item xs={8}>
                 <TextField
                   fullWidth
@@ -467,9 +471,10 @@ const ProjectsPage: React.FC = () => {
                   </Select>
                 </FormControl>
               </Grid>
-            </Grid>
+              </Grid>
+            </Box>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
+          <DialogActions sx={{ p: 3, pt: 2 }}>
             <Button onClick={handleCloseCreate} variant="outlined" sx={{ borderRadius: 2, textTransform: 'none' }}>
               Cancel
             </Button>

@@ -45,8 +45,8 @@ const buildTheme = (mode: PaletteMode): Theme =>
       error: { main: '#ef4444' },
       info: { main: '#3b82f6' },
       background: {
-        default: mode === 'dark' ? '#0f172a' : '#f8fafc',
-        paper: mode === 'dark' ? '#1e293b' : '#ffffff',
+        default: mode === 'dark' ? '#0b1120' : '#f8fafc',
+        paper: mode === 'dark' ? '#111827' : '#ffffff',
       },
       divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
     },
@@ -61,13 +61,16 @@ const buildTheme = (mode: PaletteMode): Theme =>
         'Arial',
         'sans-serif',
       ].join(','),
-      h1: { fontWeight: 800, letterSpacing: '-0.025em' },
-      h2: { fontWeight: 700, letterSpacing: '-0.025em' },
-      h3: { fontWeight: 700, letterSpacing: '-0.025em' },
-      h4: { fontWeight: 600, letterSpacing: '-0.015em' },
-      h5: { fontWeight: 600, letterSpacing: '-0.015em' },
-      h6: { fontWeight: 600 },
-      button: { fontWeight: 600, letterSpacing: '0.01em' },
+      h1: { fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.2 },
+      h2: { fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.2 },
+      h3: { fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.2 },
+      h4: { fontWeight: 600, letterSpacing: '-0.015em', lineHeight: 1.3 },
+      h5: { fontWeight: 600, letterSpacing: '-0.015em', lineHeight: 1.4 },
+      h6: { fontWeight: 600, lineHeight: 1.4 },
+      subtitle1: { fontWeight: 600, letterSpacing: '0.01em', lineHeight: 1.5 },
+      body1: { letterSpacing: '0.01em', lineHeight: 1.6 },
+      body2: { letterSpacing: '0.01em', lineHeight: 1.6 },
+      button: { fontWeight: 600, letterSpacing: '0.02em' },
     },
     shape: { borderRadius: 12 },
     components: {
@@ -75,11 +78,16 @@ const buildTheme = (mode: PaletteMode): Theme =>
         styleOverrides: {
           root: {
             textTransform: 'none',
-            borderRadius: '8px',
-            padding: '8px 16px',
+            borderRadius: '10px',
+            padding: '8px 20px',
             boxShadow: 'none',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              boxShadow: mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.5)' : '0 4px 12px rgba(79, 70, 229, 0.2)',
+              boxShadow: mode === 'dark' ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(79, 70, 229, 0.15)',
+              transform: 'translateY(-1px)',
+            },
+            '&:active': {
+              transform: 'translateY(0)',
             },
           },
           contained: {
@@ -93,12 +101,13 @@ const buildTheme = (mode: PaletteMode): Theme =>
       MuiCard: {
         styleOverrides: {
           root: {
-            backgroundImage: 'none', // Remove the annoying dark mode overlay in MUI
+            backgroundImage: 'none',
+            borderRadius: '16px',
             boxShadow:
               mode === 'dark'
-                ? '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3)'
-                : '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
-            border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'}`,
+                ? '0 4px 20px -4px rgba(0, 0, 0, 0.4), 0 2px 8px -2px rgba(0, 0, 0, 0.2)'
+                : '0 4px 20px -4px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.02)',
+            border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}`,
           },
         },
       },
@@ -140,8 +149,9 @@ const buildTheme = (mode: PaletteMode): Theme =>
       MuiAppBar: {
         styleOverrides: {
           root: {
-            background: mode === 'dark' ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(12px)',
+            background: mode === 'dark' ? 'rgba(11, 17, 32, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
             boxShadow: 'none',
             borderBottom: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
             color: mode === 'dark' ? '#f8fafc' : '#0f172a',
@@ -151,7 +161,7 @@ const buildTheme = (mode: PaletteMode): Theme =>
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            background: mode === 'dark' ? '#1e293b' : '#ffffff',
+            background: mode === 'dark' ? '#111827' : '#ffffff',
             borderRight: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`,
           }
         }
@@ -161,14 +171,14 @@ const buildTheme = (mode: PaletteMode): Theme =>
       MuiCardContent: {
         styleOverrides: {
           root: {
-            padding: '20px',
-            '&:last-child': { paddingBottom: '20px' },
+            padding: '24px',
+            '&:last-child': { paddingBottom: '24px' },
           },
         },
       },
       MuiCardHeader: {
         styleOverrides: {
-          root: { padding: '20px 20px 0' },
+          root: { padding: '24px 24px 0' },
           title: { fontWeight: 700 },
         },
       },

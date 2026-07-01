@@ -269,16 +269,17 @@ const DashboardPage: React.FC = () => {
             <CardContent sx={{ height: '100%' }}>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Box>
-                  <Typography variant="h6" fontWeight={700}>
+                  <Typography variant="h6" fontWeight={800}>
                     Task Completion Trend
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                     Monthly overview
                   </Typography>
                 </Box>
                 <Tooltip title="More options"><IconButton size="small"><MoreVert /></IconButton></Tooltip>
               </Box>
-                <ResponsiveContainer width="100%" height={240}>
+              <Box sx={{ width: '100%', height: 260 }}>
+                <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={/* use tasks per month derived from API */ []} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                   <defs>
                     <linearGradient id="tasksGrad" x1="0" y1="0" x2="0" y2="1">
@@ -299,6 +300,7 @@ const DashboardPage: React.FC = () => {
                   <Area type="monotone" dataKey="completed" stroke="#2e7d32" fill="url(#completedGrad)" strokeWidth={2} name="Completed" />
                 </AreaChart>
               </ResponsiveContainer>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
@@ -307,13 +309,14 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} lg={4}>
           <Card sx={{ height: 340 }}>
             <CardContent sx={{ height: '100%' }}>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
+              <Typography variant="h6" fontWeight={800} gutterBottom>
                 Task Status
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography variant="caption" color="text.secondary" textTransform="uppercase" letterSpacing="0.05em">
                 Current sprint
               </Typography>
-                <ResponsiveContainer width="100%" height={220}>
+              <Box sx={{ width: '100%', height: 220 }}>
+                <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={[]}
@@ -327,7 +330,8 @@ const DashboardPage: React.FC = () => {
                   <RechartsTooltip />
                 </PieChart>
               </ResponsiveContainer>
-              <Box display="flex" flexWrap="wrap" gap={1} justifyContent="center">
+              </Box>
+              <Box display="flex" flexWrap="wrap" gap={1} justifyContent="center" mt={2}>
                 {/* status chips will be populated when data available */}
                 {!loading ? (
                   ['Completed', 'In Progress', 'Review', 'Todo'].map((n) => (
@@ -341,15 +345,16 @@ const DashboardPage: React.FC = () => {
 
         {/* Team Workload */}
         <Grid item xs={12} lg={6}>
-          <Card>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
+              <Typography variant="h6" fontWeight={800} gutterBottom>
                 Team Workload
               </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+              <Typography variant="caption" color="text.secondary" display="block" mb={3} textTransform="uppercase" letterSpacing="0.05em">
                 Current task distribution
               </Typography>
-              <ResponsiveContainer width="100%" height={200}>
+              <Box sx={{ width: '100%', height: 260 }}>
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={[] /* derived from tasks/assignees when needed */} layout="vertical" margin={{ left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                   <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 12 }} />
@@ -359,6 +364,7 @@ const DashboardPage: React.FC = () => {
                   <Bar dataKey="capacity" fill="#e3f2fd" radius={[0, 4, 4, 0]} name="Capacity" />
                 </BarChart>
               </ResponsiveContainer>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
@@ -367,10 +373,10 @@ const DashboardPage: React.FC = () => {
         <Grid item xs={12} lg={6}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="h6" fontWeight={700} gutterBottom>
+              <Typography variant="h6" fontWeight={800} gutterBottom>
                 Recent Activity
               </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" mb={1}>
+              <Typography variant="caption" color="text.secondary" display="block" mb={2} textTransform="uppercase" letterSpacing="0.05em">
                 Latest team updates
               </Typography>
               <List dense disablePadding>

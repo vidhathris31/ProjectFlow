@@ -27,8 +27,8 @@ body {
 
 /* Scrollbar Styling - Modern and thin */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -36,12 +36,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(150, 150, 150, 0.4);
-  border-radius: 4px;
+  background: rgba(150, 150, 150, 0.3);
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(150, 150, 150, 0.7);
+  background: rgba(150, 150, 150, 0.5);
 }
 
 /* Text Selection */
@@ -57,7 +57,6 @@ a {
   transition: color 0.2s ease;
 }
 
-/* Ensure images are responsive */
 img {
   max-width: 100%;
   height: auto;
@@ -72,14 +71,33 @@ img {
   transform: translateY(-2px);
 }
 
-/* Consistent focus ring for keyboard navigation, without adding visual noise on click */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Consistent focus ring */
 :focus-visible {
   outline: 2px solid rgba(79, 70, 229, 0.6);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Utility classes to prevent text overflow/overlap issues (long names, emails, titles) */
+/* Utilities */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .truncate-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -107,7 +125,6 @@ img {
   word-break: break-word;
 }
 
-/* Prevent long unbroken strings (emails, URLs, IDs) from overflowing cards/tables */
 .break-anywhere {
   overflow-wrap: anywhere;
   word-break: break-word;
