@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { generateAIContent } from '../services/gemini.service';
+import { generateAIContent } from '../services/groq.service';
 import { sendSuccess, sendError } from '../utils/apiResponse';
 
 /**
  * AI Assistant Controller
  * ────────────────────────────────────────────────────────────────
- * All handlers proxy structured prompts to Gemini via gemini.service.
+ * All handlers proxy structured prompts to Groq via groq.service.
  * They are purely additive — no existing business logic, models, or
  * routes are touched. Every endpoint requires authentication (enforced
  * in ai.routes.ts) and never trusts the client for the API key.
